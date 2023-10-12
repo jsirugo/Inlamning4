@@ -67,27 +67,28 @@ namespace inlamning4
             else if (menuOption == 1)
             {
                ChangeAvailableDoses();
+                    Console.Clear();
             }
             else if (menuOption == 2)
             {
                ChangeVaccinateChildren();
-            }
+                    Console.Clear();
+                }
             else if (menuOption == 3)
             {
              ChangeInputFile();
-            }
+                    Console.Clear();
+                }
             else if (menuOption == 4)
             {
              ChangeOutputFile();
-            }
+                    Console.Clear();
+                }
             else if (menuOption == 5)
             {
                 Environment.Exit(0);
             }
-            else
-            {
-                Console.WriteLine("Ogiltigt val. Försök igen.");
-            }
+           
 
             }
         }
