@@ -162,17 +162,31 @@ namespace inlamning4
             foreach (var line in input) 
             {
                 string[] parts = line.Split(',');
+
                 if (parts.Length >= 6)
                 {
+                    var personNummer = parts[0].Replace("-", "");
                     var person = new Person()
                     {
-                        PersonNummer = parts[0],
+                        PersonNummer = personNummer,
+
                         LastName = parts[1],
                         FirstName = parts[2],
                         IsHealthcareWorker = (int.Parse(parts[3]) == 1) ? true : false,
                         IsInDanger = (int.Parse(parts[4]) == 1) ? true : false,
                         Infected = (int.Parse(parts[5]) == 1) ? true : false,
                     };
+
+                    if (personNummer.Length == 12)
+                    {
+                        int birthYear = int.Parse(personNummer.Substring(0, 4));
+                        person.Age = DateTime.Now.Year - birthYear;
+                    }
+                    else if (personNummer.Length == 10)
+                    {
+                        int yearPrefix = int.Parse(personNummer.Substring(0, 2));
+                        person.Age = (yearPrefix >= 0 && yearPrefix <= 21) ? 2000 + yearPrefix : 1900 + yearPrefix;
+                    }
                     people.Add(person);
                 }
                 }
