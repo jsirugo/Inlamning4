@@ -145,7 +145,7 @@ namespace inlamning4
         }
         public static void SaveToCSV(string fileName, string[] data)
         {
-
+            Console.WriteLine("REEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE");
         }
 
         public static int ShowMenu(string prompt, IEnumerable<string> options)
