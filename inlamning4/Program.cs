@@ -170,7 +170,6 @@ namespace inlamning4
                     var person = new Person()
                     {
                         PersonNummer = personNummer,
-
                         LastName = parts[1],
                         FirstName = parts[2],
                         IsHealthcareWorker = (int.Parse(parts[3]) == 1) ? true : false,
@@ -186,7 +185,7 @@ namespace inlamning4
                     else if (personNummer.Length == 10)
                     {
                         int yearPrefix = int.Parse(personNummer.Substring(0, 2));
-                        person.Age = (yearPrefix >= 0 && yearPrefix <= 21) ? 2000 + yearPrefix : 1900 + yearPrefix;
+                        person.Age = (yearPrefix >= 0 && yearPrefix <= 18) ? 2000 + yearPrefix : 1900 + yearPrefix;
                     }
                     people.Add(person);
                 }
