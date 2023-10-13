@@ -95,13 +95,34 @@ namespace inlamning4
         {
             Console.WriteLine("Ändra antal vaccindoser");
             Console.WriteLine("-----------------------");
-            Console.Write("Ange nytt antal doser: ");
-            vaccinationSettings.AvailableDoses = int.Parse(Console.ReadLine());
+
+
+            while (true)
+            {
+                Console.Write("Ange nytt antal doser: ");
+
+                try
+                {
+
+                    if (int.TryParse(Console.ReadLine(), out int doses))
+                    {
+                        vaccinationSettings.AvailableDoses = doses;
+                        return;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Använd enbart giltliga siffror för inmatning, 0-9");
+                    }
+
+                }
+                catch (Exception)
+                {
+                    Console.WriteLine("Ett fel uppstod. Försök igen");
+                }
+            }
         }
         static void ChangeVaccinateChildren()
         {
-
-            //test av git
 
             int option = ShowMenu("Ska barn vaccineras?", new[]
                   {
