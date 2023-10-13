@@ -36,7 +36,6 @@ namespace inlamning4
         public static void Main()
         {
             CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
-            
            ShowMainMenu();
         }
         public static void ShowMainMenu()
@@ -137,7 +136,28 @@ namespace inlamning4
             return new string[0];
         }
 
-
+        public static List<Person> PeopleAdder(string[] input)
+        {
+            List<Person> people = new List<Person>();
+            foreach (var line in input) 
+            {
+                string[] parts = line.Split(',');
+                if (parts.Length >= 6)
+                {
+                    var person = new Person()
+                    {
+                        PersonNummer = parts[0],
+                        LastName = parts[1],
+                        FirstName = parts[2],
+                        IsHealthcareWorker = (int.Parse(parts[3]) == 1) ? true : false,
+                        IsInDanger = (int.Parse(parts[4]) == 1) ? true : false,
+                        Infected = (int.Parse(parts[5]) == 1) ? true : false,
+                    };
+                    people.Add(person);
+                }
+                }
+            return people;
+        }
         public static string[] ReadFromCSV(string inputFilePath) 
       
         {
