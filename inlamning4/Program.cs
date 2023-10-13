@@ -96,7 +96,6 @@ namespace inlamning4
             Console.WriteLine("Ändra antal vaccindoser");
             Console.WriteLine("-----------------------");
 
-
             while (true)
             {
                 Console.Write("Ange nytt antal doser: ");
