@@ -102,6 +102,8 @@ namespace inlamning4
         static void ChangeVaccinateChildren()
         {
 
+            //test av git
+
             int option = ShowMenu("Ska barn vaccineras?", new[]
                   {
                     "ja",
