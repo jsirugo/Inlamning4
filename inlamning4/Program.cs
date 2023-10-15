@@ -9,12 +9,13 @@ namespace inlamning4
     public class VaccinationSettings
     {
         public int AvailableDoses;
-        public bool VaccinateChildren = true;
+        public bool VaccinateChildren = false;
     }
     public class FileSettings
     {
-        public string InputFilePath = "";
-        public string OutputFilePath = "";
+        //added standard path for files
+        public string InputFilePath = "C:\\Windows\\Temp\\People.csv";
+        public string OutputFilePath = "C:\\Windows\\Temp\\Vaccinations.csv";
     }
 
     public class Person
@@ -59,7 +60,7 @@ namespace inlamning4
             });
             if (menuOption == 0)
             {
-             //   string[] vaccinationUnOrdered = ReadFromCSV();
+             string[] vaccinationUnOrdered = ReadFromCSV(fileSettings.InputFilePath);
               //  string[] vaccinationOrdered = CreateVaccinationOrder();
                 //SaveToCSV(fileSettings.OutputFilePath, vaccinationOrdered);
             }
@@ -127,7 +128,6 @@ namespace inlamning4
                   {
                     "ja",
                     "nej",
-
                 });
             if (option == 0)
             {
@@ -153,6 +153,7 @@ namespace inlamning4
         public static string[] CreateVaccinationOrder(string[] input, int doses, bool vaccinateChildren)
         {
             // Replace with your own code.
+
             return new string[0];
         }
 
@@ -189,12 +190,17 @@ namespace inlamning4
                     people.Add(person);
                 }
                 }
-            return people;
+            //Added prioritylist(will probably need tweaking for if under 18 is false/true)
+            var prioritizedPeople = people.OrderByDescending(p => p.IsHealthcareWorker)
+                .ThenByDescending(p => p.Age > 65)
+                .ThenByDescending(p => p.IsInDanger)
+                .ToList();
+            return prioritizedPeople;
         }
         public static string[] ReadFromCSV(string inputFilePath) 
       
         {
-            string[] lines = {};
+            string[] lines = {inputFilePath};
 
             return lines;
         }
