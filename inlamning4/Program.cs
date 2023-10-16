@@ -151,8 +151,17 @@ namespace inlamning4
             fileSettings.OutputFilePath = Console.ReadLine();
         }
         public static string[] CreateVaccinationOrder(string[] input, int doses, bool vaccinateChildren)
-        {
+        {   
+            
             List<Person> people = PeopleAdder(input);
+            foreach (Person person in people)
+            {
+                string birthdateString = person.Age.ToString();
+                int birthYear = int.Parse(birthdateString.Substring(0, 4));
+                person.Age = DateTime.Now.Year - birthYear;
+               
+            }
+
             var prioritizedPeople = people.OrderByDescending(p => p.IsHealthcareWorker)
                 .ThenByDescending(p => p.Age > 65)
                 .ThenByDescending(p => p.Age)
@@ -217,9 +226,9 @@ namespace inlamning4
 
             int age = now.Year - birthdate.Year;
 
-            if ( now.Month < birthdate.Month || (now.Month == birthdate.Month && now.Day < birthdate.Day))
+            if (now.Month < birthdate.Month || (now.Month == birthdate.Month && now.Day < birthdate.Day))
             {
-                age--; //hello
+                age--; 
             }
             return age;
         }
