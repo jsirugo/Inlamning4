@@ -25,7 +25,7 @@ namespace inlamning4
         public string LastName;
         public string FirstName;
         public int Age;
-        public int BirthDate;
+        public DateTime BirthDate;
         public bool IsHealthcareWorker;
         public bool IsInDanger;
         public bool Infected;
@@ -197,7 +197,7 @@ namespace inlamning4
                     if (personNummer.Length == 12)
                     {
                         int birthYear = int.Parse(personNummer.Substring(0, 4));
-                        int birthMonth = int.Parse(personNummer.Substring(4, 2));
+                        int  birthMonth = int.Parse(personNummer.Substring(4, 2));
                         int birthDay = int.Parse(personNummer.Substring(6, 2));
 
                        
@@ -214,7 +214,8 @@ namespace inlamning4
                         int birthYear = (yearPrefix >= 0 && yearPrefix <= 18) ? 20 + yearPrefix : 19 + yearPrefix;
 
                         DateTime birthdate = new DateTime(birthYear, birthMonth, birthDay);
-                        person.Age = CalculateAge(birthdate); // fdd
+                        person.BirthDate = birthdate;
+                        person.Age = CalculateAge(birthdate); 
                        
                     }
                     people.Add(person);
