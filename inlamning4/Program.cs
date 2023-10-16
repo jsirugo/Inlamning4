@@ -152,15 +152,21 @@ namespace inlamning4
         }
         public static string[] CreateVaccinationOrder(string[] input, int doses, bool vaccinateChildren)
         {
-            // Replace with your own code.
+            List<Person> people = PeopleAdder (input)
+            var prioritizedPeople = people.OrderByDescending(p => p.IsHealthcareWorker)
+                .ThenByDescending(p => (vaccinateChildren && p.Age <= 18 ))
+                .ThenByDescending(p => p.Age > 65)
+                .ThenByDescending(p => p.IsInDanger)
+                .Select(p => $"{p.PersonNummer},{p.LastName}, {p.FirstName}, {p.Age}")
+                .ToArray();
 
-            return new string[0];
+            return prioritizedPeople;
         }
 
         public static List<Person> PeopleAdder(string[] input)
         {
             List<Person> people = new List<Person>();
-            foreach (var line in input) 
+            foreach (var line in input)
             {
                 string[] parts = line.Split(',');
 
@@ -189,14 +195,10 @@ namespace inlamning4
                     }
                     people.Add(person);
                 }
-                }
-            //Added prioritylist(will probably need tweaking for if under 18 is false/true)
-            var prioritizedPeople = people.OrderByDescending(p => p.IsHealthcareWorker)
-                .ThenByDescending(p => p.Age > 65)
-                .ThenByDescending(p => p.IsInDanger)
-                .ToList();
-            return prioritizedPeople;
+            } 
         }
+        
+        
         public static string[] ReadFromCSV(string inputFilePath) 
       
         {
