@@ -25,9 +25,15 @@ namespace inlamning4
         public string LastName;
         public string FirstName;
         public int Age;
+        public int BirthDate;
         public bool IsHealthcareWorker;
         public bool IsInDanger;
         public bool Infected;
+
+         public void CalculateBirthDate()
+        {
+          
+        }
     }
     public class Program
     {
@@ -155,14 +161,7 @@ namespace inlamning4
         {   
             
             List<Person> people = PeopleAdder(input);
-            foreach (Person person in people)
-            {
-                string birthdateString = person.Age.ToString();
-                int birthYear = int.Parse(birthdateString.Substring(0, 4));
-                person.Age = DateTime.Now.Year - birthYear;
-               
-            }
-
+          
             var prioritizedPeople = people.OrderByDescending(p => p.IsHealthcareWorker)
                 .ThenByDescending(p => p.Age > 65)
                 .ThenByDescending(p => p.Age)
@@ -203,6 +202,7 @@ namespace inlamning4
                        
                         DateTime birthdate = new DateTime(birthYear, birthMonth, birthDay);
                         person.Age = CalculateAge(birthdate);
+                        
                     }
                     else if (personNummer.Length == 10)
                     {
@@ -214,6 +214,7 @@ namespace inlamning4
 
                         DateTime birthdate = new DateTime(birthYear, birthMonth, birthDay);
                         person.Age = CalculateAge(birthdate);
+                       
                     }
                     people.Add(person);
                 }
@@ -233,6 +234,7 @@ namespace inlamning4
             }
             return age;
         }
+        
         public static string[] ReadFromCSV(string inputFilePath) 
       
         {
