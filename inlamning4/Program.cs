@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.IO;
 
 namespace inlamning4
 {
@@ -235,7 +236,7 @@ namespace inlamning4
         public static string[] ReadFromCSV(string inputFilePath) 
       
         {
-            string[] lines = {inputFilePath};
+            string[] lines = File.ReadAllLines(inputFilePath);
 
             return lines;
         }
