@@ -164,7 +164,7 @@ namespace inlamning4
           
             var prioritizedPeople = people.OrderByDescending(p => p.IsHealthcareWorker)
                 .ThenByDescending(p => p.Age > 65)
-                .ThenByDescending(p => p.Age)
+                .ThenByDescending(p => p.BirthDate)
                 .ThenByDescending(p => p.IsInDanger)
                 .ThenByDescending(p => (vaccinateChildren && p.Age <= 18 ))
                 .Select(p => $"{p.PersonNummer},{p.LastName}, {p.FirstName}, {p.Age}")
@@ -203,6 +203,7 @@ namespace inlamning4
                        
                         DateTime birthdate = new DateTime(birthYear, birthMonth, birthDay);
                         person.Age = CalculateAge(birthdate);
+                        person.BirthDate = birthdate;
                         
                     }
                     else if (personNummer.Length == 10)
