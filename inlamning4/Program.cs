@@ -219,7 +219,7 @@ namespace inlamning4
 
             if ( now.Month < birthdate.Month || (now.Month == birthdate.Month && now.Day < birthdate.Day))
             {
-                age--;
+                age--; //hello
             }
             return age;
         }
