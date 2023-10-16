@@ -152,11 +152,12 @@ namespace inlamning4
         }
         public static string[] CreateVaccinationOrder(string[] input, int doses, bool vaccinateChildren)
         {
-            List<Person> people = PeopleAdder (input)
+            List<Person> people = PeopleAdder(input);
             var prioritizedPeople = people.OrderByDescending(p => p.IsHealthcareWorker)
-                .ThenByDescending(p => (vaccinateChildren && p.Age <= 18 ))
                 .ThenByDescending(p => p.Age > 65)
+                .ThenByDescending(p => p.Age)
                 .ThenByDescending(p => p.IsInDanger)
+                .ThenByDescending(p => (vaccinateChildren && p.Age <= 18 ))
                 .Select(p => $"{p.PersonNummer},{p.LastName}, {p.FirstName}, {p.Age}")
                 .ToArray();
 
@@ -196,6 +197,7 @@ namespace inlamning4
                     people.Add(person);
                 }
             } 
+            return people;
         }
         
         
