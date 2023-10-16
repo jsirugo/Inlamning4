@@ -68,8 +68,8 @@ namespace inlamning4
             if (menuOption == 0)
             {
              string[] vaccinationUnOrdered = ReadFromCSV(fileSettings.InputFilePath);
-              //  string[] vaccinationOrdered = CreateVaccinationOrder();
-                //SaveToCSV(fileSettings.OutputFilePath, vaccinationOrdered);
+             string[] vaccinationOrdered = CreateVaccinationOrder(vaccinationUnOrdered, vaccinationSettings.AvailableDoses, vaccinationSettings.VaccinateChildren);
+             SaveToCSV(fileSettings.OutputFilePath, vaccinationOrdered);
             }
             else if (menuOption == 1)
             {
@@ -170,6 +170,7 @@ namespace inlamning4
                 .Select(p => $"{p.PersonNummer},{p.LastName}, {p.FirstName}, {p.Age}")
                 .ToArray();
 
+           
             return prioritizedPeople;
         }
 
@@ -242,9 +243,9 @@ namespace inlamning4
 
             return lines;
         }
-        public static void SaveToCSV(string fileName, string[] data)
+        public static void SaveToCSV(string prioritizedPeople, string[] data)
         {
-            Console.WriteLine("REEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE");
+            File.WriteAllLines(prioritizedPeople, data);
         }
 
         public static int ShowMenu(string prompt, IEnumerable<string> options)
