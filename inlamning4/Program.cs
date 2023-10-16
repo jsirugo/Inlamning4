@@ -187,12 +187,23 @@ namespace inlamning4
                     if (personNummer.Length == 12)
                     {
                         int birthYear = int.Parse(personNummer.Substring(0, 4));
-                        person.Age = DateTime.Now.Year - birthYear;
+                        int birthMonth = int.Parse(personNummer.Substring(4, 2));
+                        int birthDay = int.Parse(personNummer.Substring(6, 2));
+
+                       
+                        DateTime birthdate = new DateTime(birthYear, birthMonth, birthDay);
+                        person.Age = CalculateAge(birthdate);
                     }
                     else if (personNummer.Length == 10)
                     {
                         int yearPrefix = int.Parse(personNummer.Substring(0, 2));
-                        person.Age = (yearPrefix >= 0 && yearPrefix <= 18) ? 2000 + yearPrefix : 1900 + yearPrefix;
+                        int birthMonth = int.Parse(personNummer.Substring(2, 2));
+                        int birthDay = int.Parse(personNummer.Substring(4, 2));
+
+                        int birthYear = (yearPrefix >= 0 && yearPrefix <= 18) ? 20 + yearPrefix : 19 + yearPrefix;
+
+                        DateTime birthdate = new DateTime(birthYear, birthMonth, birthDay);
+                        person.Age = CalculateAge(birthdate);
                     }
                     people.Add(person);
                 }
@@ -200,7 +211,18 @@ namespace inlamning4
             return people;
         }
         
-        
+      public static int CalculateAge(DateTime birthdate) 
+        { 
+            DateTime now = DateTime.Now;
+
+            int age = now.Year - birthdate.Year;
+
+            if ( now.Month < birthdate.Month || (now.Month == birthdate.Month && now.Day < birthdate.Day))
+            {
+                age--;
+            }
+            return age;
+        }
         public static string[] ReadFromCSV(string inputFilePath) 
       
         {
