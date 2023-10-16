@@ -214,7 +214,7 @@ namespace inlamning4
                         int birthYear = (yearPrefix >= 0 && yearPrefix <= 18) ? 20 + yearPrefix : 19 + yearPrefix;
 
                         DateTime birthdate = new DateTime(birthYear, birthMonth, birthDay);
-                        person.Age = CalculateAge(birthdate);
+                        person.Age = CalculateAge(birthdate); // fdd
                        
                     }
                     people.Add(person);
