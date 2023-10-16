@@ -163,9 +163,11 @@ namespace inlamning4
             List<Person> people = PeopleAdder(input);
           
             var prioritizedPeople = people.OrderByDescending(p => p.IsHealthcareWorker)
-
                 .ThenByDescending(p => p.Age)
-                .ThenByDescending(p => p.BirthDate)
+                  // Sort by birthdate in descending order
+    .           ThenBy(p => p.BirthDate.Month)      // Sort by birth month in ascending order
+    .           ThenBy(p => p.BirthDate.Day)
+                
                 .ThenByDescending(p => p.IsInDanger)
                 .ThenByDescending(p => (vaccinateChildren && p.Age <= 18 ))
                 .Select(p => $"{p.PersonNummer},{p.LastName}, {p.FirstName}, {p.Age}")
@@ -213,7 +215,7 @@ namespace inlamning4
                         int birthMonth = int.Parse(personNummer.Substring(2, 2));
                         int birthDay = int.Parse(personNummer.Substring(4, 2));
 
-                        int birthYear = (yearPrefix >= 0 && yearPrefix <= 18) ? 20 + yearPrefix : 19 + yearPrefix;
+                        int birthYear = (yearPrefix >= 0 && yearPrefix <= 18) ? 2000 + yearPrefix : 1900 + yearPrefix;
 
                         DateTime birthdate = new DateTime(birthYear, birthMonth, birthDay);
                         person.BirthDate = birthdate;
