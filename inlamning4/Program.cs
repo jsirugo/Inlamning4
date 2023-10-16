@@ -163,7 +163,7 @@ namespace inlamning4
             List<Person> people = PeopleAdder(input);
           
             var prioritizedPeople = people.OrderByDescending(p => p.IsHealthcareWorker)
-                .ThenByDescending(p => p.Age > 65)
+                
                 .ThenByDescending(p => p.Age)
                 .ThenByDescending(p => p.IsInDanger)
                 .ThenByDescending(p => (vaccinateChildren && p.Age <= 18 ))
