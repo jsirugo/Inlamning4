@@ -30,10 +30,7 @@ namespace inlamning4
         public bool IsInDanger;
         public bool Infected;
 
-         public void CalculateBirthDate()
-        {
-          
-        }
+        
     }
     public class Program
     {
@@ -69,7 +66,7 @@ namespace inlamning4
             {
              string[] vaccinationUnOrdered = ReadFromCSV(fileSettings.InputFilePath);
              string[] vaccinationOrdered = CreateVaccinationOrder(vaccinationUnOrdered, vaccinationSettings.AvailableDoses, vaccinationSettings.VaccinateChildren);
-             SaveToCSV(fileSettings.OutputFilePath, vaccinationOrdered);
+             SaveToCSV(vaccinationOrdered);
             }
             else if (menuOption == 1)
             {
@@ -248,9 +245,10 @@ namespace inlamning4
 
             return lines;
         }
-        public static void SaveToCSV(string prioritizedPeople, string[] data)
+        public static void SaveToCSV(string[] data)
         {
-            File.WriteAllLines(prioritizedPeople, data);
+          
+            File.WriteAllLines(fileSettings.OutputFilePath, data);
         }
 
         public static int ShowMenu(string prompt, IEnumerable<string> options)
