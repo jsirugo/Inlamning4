@@ -158,10 +158,20 @@ namespace inlamning4
             fileSettings.OutputFilePath = Console.ReadLine();
         }
         public static string[] CreateVaccinationOrder(string[] input, int doses, bool vaccinateChildren)
-        {   
-            
+        {
+            doses = vaccinationSettings.AvailableDoses;
+            vaccinateChildren = vaccinationSettings.VaccinateChildren;
             List<Person> people = PeopleAdder(input);
-          
+            if (vaccinateChildren == false ) 
+            {
+                foreach (Person person in people)
+                {
+                    if ( person.Age < 18) 
+                    {
+                        people.Remove(person);
+                    }
+                }
+            }
             var prioritizedPeople = people.OrderByDescending(p => p.IsHealthcareWorker)
                 .ThenByDescending(p => p.Age)
                   // Sort by birthdate in descending order
@@ -200,7 +210,7 @@ namespace inlamning4
                     if (personNummer.Length == 12)
                     {
                         int birthYear = int.Parse(personNummer.Substring(0, 4));
-                        int  birthMonth = int.Parse(personNummer.Substring(4, 2));
+                        int birthMonth = int.Parse(personNummer.Substring(4, 2));
                         int birthDay = int.Parse(personNummer.Substring(6, 2));
 
                        
