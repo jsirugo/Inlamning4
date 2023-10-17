@@ -162,11 +162,20 @@ namespace inlamning4
             doses = vaccinationSettings.AvailableDoses;
             vaccinateChildren = vaccinationSettings.VaccinateChildren;
             List<Person> people = PeopleAdder(input);
-           
+            if (vaccinateChildren == false ) 
+            {
+                foreach (Person person in people.ToList()) 
+                {
+                    if (person.Age < 18) 
+                    {
+                        people.Remove(person);
+                    }
+                }
+            }
             var prioritizedPeople = people.OrderByDescending(p => p.IsHealthcareWorker)
                 .ThenByDescending(p => p.Age)
-                 
-    .           ThenBy(p => p.BirthDate.Month)      
+                  // Sort by birthdate in descending order
+    .           ThenBy(p => p.BirthDate.Month)      // Sort by birth month in ascending order
     .           ThenBy(p => p.BirthDate.Day)
                 
                 .ThenByDescending(p => p.IsInDanger)
@@ -223,17 +232,7 @@ namespace inlamning4
                         person.Age = CalculateAge(birthdate); 
                        
                     }
-                    
                     people.Add(person);
-                    if(vaccinationSettings.VaccinateChildren == false)
-                    {
-                        if (person.Age < 18)
-                        {
-                            people.Remove(person);
-                        }
-                    }
-                   
-                    
                 }
             } 
             return people;
