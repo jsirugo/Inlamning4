@@ -162,18 +162,14 @@ namespace inlamning4
             doses = vaccinationSettings.AvailableDoses;
             vaccinateChildren = vaccinationSettings.VaccinateChildren;
             List<Person> people = PeopleAdder(input);
-            List<Person> filteredPeople;
+            List<Person> filteredPeople = new List<Person>(people);
 
             // Filter out children if vaccinateChildren is false
             if (!vaccinateChildren)
             {
-                filteredPeople = people.Where(person => person.Age >= 18).ToList();
+                filteredPeople = filteredPeople.Where(person => person.Age >= 18).ToList();
             }
-            else
-            {
-                // If vaccinateChildren is true, keep all people
-                filteredPeople = new List<Person>(people);
-            }
+           
 
             var prioritizedPeople = filteredPeople.OrderByDescending(p => p.IsHealthcareWorker)
                 .ThenByDescending(p => p.Age)
