@@ -162,16 +162,20 @@ namespace inlamning4
             doses = vaccinationSettings.AvailableDoses;
             vaccinateChildren = vaccinationSettings.VaccinateChildren;
             List<Person> people = PeopleAdder(input);
-            if (vaccinateChildren == false ) 
+            List<Person> CopyOfPeopleList = new List<Person>(people);
+            // skapa ny kopia av lista som lägger till personer beroende på vaccinateChildren boolen
+            if (vaccinateChildren == false) 
             {
-                foreach (Person person in people.ToList()) 
+                foreach (Person person in CopyOfPeopleList) 
                 {
                     if (person.Age < 18) 
                     {
                         people.Remove(person);
                     }
                 }
+                people = CopyOfPeopleList;
             }
+
             var prioritizedPeople = people.OrderByDescending(p => p.IsHealthcareWorker)
                 .ThenByDescending(p => p.Age)
                   // Sort by birthdate in descending order
