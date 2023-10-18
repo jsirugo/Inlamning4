@@ -194,8 +194,8 @@ namespace inlamning4
                 }
                 else
                 {
-                    validPath = true;
                     fileSettings.OutputFilePath = Path.Combine(path, "Vaccinations.csv");
+                    validPath = true;
                 }
             }
         }
