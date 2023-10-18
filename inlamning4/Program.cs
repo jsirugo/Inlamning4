@@ -148,19 +148,58 @@ namespace inlamning4
                     vaccinationSettings.VaccinateChildren = false;
                 }
             }
-            static void ChangeInputFile()
-            {
-                Console.WriteLine("Nuvarande indatafilväg: " + fileSettings.InputFilePath);
-                Console.Write("Ange sökväg till ny indatafil: ");
-                fileSettings.InputFilePath = Console.ReadLine();
+        static void ChangeInputFile()
+        {
+            bool validPath = false;
 
-            }
-            static void ChangeOutputFile()
+            while (!validPath)
             {
-                Console.Write("Ange sökväg till ny utdatafil: ");
-                fileSettings.OutputFilePath = Console.ReadLine();
+                try
+                {
+                    Console.WriteLine("Nuvarande indatafilväg: " + fileSettings.InputFilePath);
+                    Console.Write("Ange sökväg till ny indatafil: ");
+
+                    string newPath = Console.ReadLine();
+
+                    if (!File.Exists(newPath))
+                    {
+                        Console.WriteLine("Filen du har angett existerar inte. Ange en giltig filväg.");
+                    }
+                    else
+                    {
+                        fileSettings.InputFilePath = newPath;
+                        validPath = true;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Ett oväntat fel uppstod: " + ex.Message);
+                }
             }
-            public static string[] CreateVaccinationOrder(string[] input, int doses, bool vaccinateChildren)
+        }
+        static void ChangeOutputFile()
+        {
+            bool validPath = false;
+
+            while (!validPath)
+            {
+                Console.Write("Ange plats för utadatafil: ");
+
+                string path = Console.ReadLine();
+
+                if (!Directory.Exists(path))
+                {
+                    Console.WriteLine("Mappen du har angett existerar inte. Försök igen." +
+                        " Ange enbart namn fram till mappen du vill spara i.");
+                }
+                else
+                {
+                    validPath = true;
+                    fileSettings.OutputFilePath = Path.Combine(path, "Vaccinations.csv");
+                }
+            }
+        }
+        public static string[] CreateVaccinationOrder(string[] input, int doses, bool vaccinateChildren)
             {
                 doses = vaccinationSettings.AvailableDoses;
                 vaccinateChildren = vaccinationSettings.VaccinateChildren;
