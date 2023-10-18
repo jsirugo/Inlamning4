@@ -167,11 +167,13 @@ namespace inlamning4
              * */
             
             var prioritizedPeople = filteredPeople.OrderByDescending(p => p.IsHealthcareWorker)
-                .ThenByDescending(p => p.Age)
+                .ThenByDescending(p => p.Age >= 65)
                 .ThenBy(p => p.BirthDate.Month)
                 .ThenBy(p => p.BirthDate.Day)
                 .ThenByDescending(p => p.IsInDanger)
-                
+                .ThenByDescending (p => p.Age)
+                .ThenBy(p => p.BirthDate.Month)
+                .ThenBy(p => p.BirthDate.Day)
                 .Select(p => $"{p.PersonNummer},{p.LastName}, {p.FirstName}, {p.Age}")
                 .ToArray();
 
