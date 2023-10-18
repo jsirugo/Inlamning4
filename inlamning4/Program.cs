@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.IO;
+using System.Reflection.Metadata.Ecma335;
+using System.ComponentModel.Design;
 
 namespace inlamning4
 {
@@ -24,343 +26,384 @@ namespace inlamning4
         public string PersonNummer;
         public string LastName;
         public string FirstName;
+        public int Doses = 0;
         public int Age;
         public DateTime BirthDate;
         public bool IsHealthcareWorker;
         public bool IsInDanger;
         public bool Infected;
 
-        
-    }
-    public class Program
-    {
-        
-        static VaccinationSettings vaccinationSettings = new VaccinationSettings();
-        static FileSettings fileSettings = new FileSettings();
 
-        public static void Main()
-        {
-            CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
-           ShowMainMenu();
+
+      
+
         }
-        public static void ShowMainMenu()
+        public class Program
         {
-            while(true) { 
-            Console.WriteLine("Huvudmeny");
-            Console.WriteLine("Antal tillgängliga vaccindoser: " + vaccinationSettings.AvailableDoses);
-            Console.WriteLine("Nuvarande indatafil: "+ fileSettings.InputFilePath);
-            Console.WriteLine("Nuvarande utdatafil: " + fileSettings.OutputFilePath);
-            Console.WriteLine("Vaccinering under 18 år: "+ (vaccinationSettings.VaccinateChildren ? "ja" : "nej"));
-            Console.WriteLine("------------------");
+            static VaccinationSettings vaccinationSettings = new VaccinationSettings();
+            static FileSettings fileSettings = new FileSettings();
 
-            int menuOption = ShowMenu("Vad vill du göra?", new[]
-             {
+            public static void Main()
+            {
+                CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
+                ShowMainMenu();
+            }
+            public static void ShowMainMenu()
+            {
+                while (true)
+                {
+                    Console.WriteLine("Huvudmeny");
+                    Console.WriteLine("Antal tillgängliga vaccindoser: " + vaccinationSettings.AvailableDoses);
+                    Console.WriteLine("Nuvarande indatafil: " + fileSettings.InputFilePath);
+                    Console.WriteLine("Nuvarande utdatafil: " + fileSettings.OutputFilePath);
+                    Console.WriteLine("Vaccinering under 18 år: " + (vaccinationSettings.VaccinateChildren ? "ja" : "nej"));
+                    Console.WriteLine("------------------");
+
+                    int menuOption = ShowMenu("Vad vill du göra?", new[]
+                     {
                 "Skapa prioritetsordning",
                 "Ändra antal vaccindoser",
                 "Ändra åldersgräns",
                 "Ändra indatafil",
                 "Ändra utdatafil",
-                "Avsluta" 
+                "Avsluta"
             });
-            if (menuOption == 0)
-            {
-             string[] vaccinationUnOrdered = ReadFromCSV(fileSettings.InputFilePath);
-             string[] vaccinationOrdered = CreateVaccinationOrder(vaccinationUnOrdered, vaccinationSettings.AvailableDoses, vaccinationSettings.VaccinateChildren);
-             SaveToCSV(vaccinationOrdered);
-            }
-            else if (menuOption == 1)
-            {
-               ChangeAvailableDoses();
-                    Console.Clear();
-            }
-            else if (menuOption == 2)
-            {
-               ChangeVaccinateChildren();
-                    Console.Clear();
-                }
-            else if (menuOption == 3)
-            {
-             ChangeInputFile();
-                    Console.Clear();
-                }
-            else if (menuOption == 4)
-            {
-             ChangeOutputFile();
-                    Console.Clear();
-                }
-            else if (menuOption == 5)
-            {
-                Environment.Exit(0);
-            }
-           
-            }
-        }
-
-        static void ChangeAvailableDoses()
-        {
-            Console.WriteLine("Ändra antal vaccindoser");
-            Console.WriteLine("-----------------------");
-
-            while (true)
-            {
-                Console.Write("Ange nytt antal doser: ");
-
-                try
-                {
-
-                    if (int.TryParse(Console.ReadLine(), out int doses))
+                    if (menuOption == 0)
                     {
-                        vaccinationSettings.AvailableDoses = doses;
-                        return;
+                        string[] vaccinationUnOrdered = ReadFromCSV(fileSettings.InputFilePath);
+                        string[] vaccinationOrdered = CreateVaccinationOrder(vaccinationUnOrdered, vaccinationSettings.AvailableDoses, vaccinationSettings.VaccinateChildren);
+                        SaveToCSV(vaccinationOrdered);
                     }
-                    else
+                    else if (menuOption == 1)
                     {
-                        Console.WriteLine("Använd enbart giltliga siffror för inmatning, 0-9");
+                        ChangeAvailableDoses();
+                        Console.Clear();
+                    }
+                    else if (menuOption == 2)
+                    {
+                        ChangeVaccinateChildren();
+                        Console.Clear();
+                    }
+                    else if (menuOption == 3)
+                    {
+                        ChangeInputFile();
+                        Console.Clear();
+                    }
+                    else if (menuOption == 4)
+                    {
+                        ChangeOutputFile();
+                        Console.Clear();
+                    }
+                    else if (menuOption == 5)
+                    {
+                        Environment.Exit(0);
                     }
 
                 }
-                catch (Exception)
+            }
+
+            static void ChangeAvailableDoses()
+            {
+                Console.WriteLine("Ändra antal vaccindoser");
+                Console.WriteLine("-----------------------");
+
+                while (true)
                 {
-                    Console.WriteLine("Ett fel uppstod. Försök igen");
+                    Console.Write("Ange nytt antal doser: ");
+
+                    try
+                    {
+
+                        if (int.TryParse(Console.ReadLine(), out int doses))
+                        {
+                            vaccinationSettings.AvailableDoses = doses;
+                            return;
+                        }
+                        else
+                        {
+                            Console.WriteLine("Använd enbart giltliga siffror för inmatning, 0-9");
+                        }
+
+                    }
+                    catch (Exception)
+                    {
+                        Console.WriteLine("Ett fel uppstod. Försök igen");
+                    }
                 }
             }
-        }
-        static void ChangeVaccinateChildren()
-        {
+            static void ChangeVaccinateChildren()
+            {
 
-            int option = ShowMenu("Ska barn vaccineras?", new[]
-                  {
+                int option = ShowMenu("Ska barn vaccineras?", new[]
+                      {
                     "ja",
                     "nej",
                 });
-            if (option == 0)
-            {
-                vaccinationSettings.VaccinateChildren = true;
-            }
-            else
-            {
-                vaccinationSettings.VaccinateChildren = false;
-            }
-        }
-        static void ChangeInputFile()
-        {
-            Console.WriteLine("Nuvarande indatafilväg: " + fileSettings.InputFilePath);
-            Console.Write("Ange sökväg till ny indatafil: ");
-            fileSettings.InputFilePath = Console.ReadLine();
-
-        }
-        static void ChangeOutputFile()
-        {
-            Console.Write("Ange sökväg till ny utdatafil: ");
-            fileSettings.OutputFilePath = Console.ReadLine();
-        }
-        public static string[] CreateVaccinationOrder(string[] input, int doses, bool vaccinateChildren)
-        {
-            doses = vaccinationSettings.AvailableDoses;
-            vaccinateChildren = vaccinationSettings.VaccinateChildren;
-            List<Person> people = PeopleAdder(input);
-            List<Person> filteredPeople = people.Where(person => vaccinateChildren || person.Age >= 18).ToList();
-            /* Ordning på listan: 1 vårdpersonal
-             * 2 folk över 65
-             * 3 folk i riskgrupp
-             * 4 alla andra
-             * */
-            
-            var prioritizedPeople = filteredPeople.OrderByDescending(p => p.IsHealthcareWorker)
-                .ThenByDescending(p => p.Age >= 65)
-                .ThenBy(p => p.BirthDate.Month)
-                .ThenBy(p => p.BirthDate.Day)
-                .ThenByDescending(p => p.IsInDanger)
-                .ThenByDescending (p => p.Age)
-                .ThenBy(p => p.BirthDate.Month)
-                .ThenBy(p => p.BirthDate.Day)
-                .Select(p => $"{p.PersonNummer},{p.LastName}, {p.FirstName}, {p.Age}")
-                .ToArray();
-
-
-            return prioritizedPeople;
-        }
-
-        public static List<Person> PeopleAdder(string[] input)
-        {
-            List<Person> people = new List<Person>();
-            foreach (var line in input)
-            {
-                string[] parts = line.Split(',');
-
-                if (parts.Length >= 6)
+                if (option == 0)
                 {
-                    var personNummer = parts[0].Replace("-", "");
-                    var person = new Person()
-                    {
-                        PersonNummer = personNummer,
-                        LastName = parts[1],
-                        FirstName = parts[2],
-                        IsHealthcareWorker = (int.Parse(parts[3]) == 1) ? true : false,
-                        IsInDanger = (int.Parse(parts[4]) == 1) ? true : false,
-                        Infected = (int.Parse(parts[5]) == 1) ? true : false,
-                    };
-
-                    if (personNummer.Length == 12)
-                    {
-                        int birthYear = int.Parse(personNummer.Substring(0, 4));
-                        int birthMonth = int.Parse(personNummer.Substring(4, 2));
-                        int birthDay = int.Parse(personNummer.Substring(6, 2));
-
-                       
-                        DateTime birthdate = new DateTime(birthYear, birthMonth, birthDay);
-                        person.Age = CalculateAge(birthdate);
-                        person.BirthDate = birthdate;
-                        
-                    }
-                    else if (personNummer.Length == 10)
-                    {
-                        int yearPrefix = int.Parse(personNummer.Substring(0, 2));
-                        int birthMonth = int.Parse(personNummer.Substring(2, 2));
-                        int birthDay = int.Parse(personNummer.Substring(4, 2));
-
-                        int birthYear = (yearPrefix >= 0 && yearPrefix <= 18) ? 2000 + yearPrefix : 1900 + yearPrefix;
-
-                        DateTime birthdate = new DateTime(birthYear, birthMonth, birthDay);
-                        person.BirthDate = birthdate;
-                        person.Age = CalculateAge(birthdate); 
-                       
-                    }
-                    people.Add(person);
+                    vaccinationSettings.VaccinateChildren = true;
                 }
-            } 
-            return people;
-        }
-        
-      public static int CalculateAge(DateTime birthdate) 
-        { 
-            DateTime now = DateTime.Now;
-
-            int age = now.Year - birthdate.Year;
-
-            if (now.Month < birthdate.Month || (now.Month == birthdate.Month && now.Day < birthdate.Day))
-            {
-                age--; 
-            }
-            return age;
-        }
-        
-        public static string[] ReadFromCSV(string inputFilePath) 
-      
-        {
-            string[] lines = File.ReadAllLines(inputFilePath);
-
-            return lines;
-        }
-        public static void SaveToCSV(string[] data)
-        {
-          
-            File.WriteAllLines(fileSettings.OutputFilePath, data);
-        }
-
-        public static int ShowMenu(string prompt, IEnumerable<string> options)
-        {
-            if (options == null || options.Count() == 0)
-            {
-                throw new ArgumentException("Cannot show a menu for an empty list of options.");
-            }
-
-            Console.WriteLine(prompt);
-
-            // Hide the cursor that will blink after calling ReadKey.
-            Console.CursorVisible = false;
-
-            // Calculate the width of the widest option so we can make them all the same width later.
-            int width = options.Max(option => option.Length);
-
-            int selected = 0;
-            int top = Console.CursorTop;
-            for (int i = 0; i < options.Count(); i++)
-            {
-                // Start by highlighting the first option.
-                if (i == 0)
+                else
                 {
+                    vaccinationSettings.VaccinateChildren = false;
+                }
+            }
+            static void ChangeInputFile()
+            {
+                Console.WriteLine("Nuvarande indatafilväg: " + fileSettings.InputFilePath);
+                Console.Write("Ange sökväg till ny indatafil: ");
+                fileSettings.InputFilePath = Console.ReadLine();
+
+            }
+            static void ChangeOutputFile()
+            {
+                Console.Write("Ange sökväg till ny utdatafil: ");
+                fileSettings.OutputFilePath = Console.ReadLine();
+            }
+            public static string[] CreateVaccinationOrder(string[] input, int doses, bool vaccinateChildren)
+            {
+                doses = vaccinationSettings.AvailableDoses;
+                vaccinateChildren = vaccinationSettings.VaccinateChildren;
+                List<Person> people = PeopleAdder(input);
+                List<Person> filteredPeople = people.Where(person => vaccinateChildren || person.Age >= 18).ToList();
+                /* Ordning på listan: 1 vårdpersonal
+                 * 2 folk över 65
+                 * 3 folk i riskgrupp
+                 * 4 alla andra
+                 * */
+
+                var prioritizedPeople = filteredPeople
+                 .OrderByDescending(p => p.IsHealthcareWorker)
+                 .ThenByDescending(p => p.Age >= 65)
+                 .ThenByDescending(p => p.IsInDanger)
+                 .ThenByDescending(p => p.Age)
+                 .ThenBy(p => p.BirthDate.Month)
+                 .ThenBy(p => p.BirthDate.Day)
+                 .ToList();
+
+
+                DoseDistributionSystem(prioritizedPeople, vaccinationSettings);
+
+
+                var result = prioritizedPeople
+                    .Select(p => $"{p.PersonNummer},{p.LastName}, {p.FirstName}, {p.Age}, {p.Doses}")
+                    .ToArray();
+
+                return result;
+
+            }
+        public static void DoseDistributionSystem(List<Person> prioritizedPeople, VaccinationSettings vaccinationSettings)
+        {
+
+            int availableDoses = vaccinationSettings.AvailableDoses;
+
+            foreach (var person in prioritizedPeople)
+            {
+                if (person.Infected && availableDoses > 0)
+                {
+                    person.Doses++;
+                    availableDoses--;
+                }
+                else if (!person.Infected && availableDoses >= 2)
+                {
+                    person.Doses += 2;
+                    availableDoses -= 2;
+                }
+                else if (!person.Infected && availableDoses == 1 && person.Doses == 0)
+                {
+                    Console.WriteLine("Not enough doses for a complete vaccination.");
+                }
+
+                if (availableDoses <= 0)
+                {
+                    Console.WriteLine("Inga doser att ge");
+                    break;
+                }
+
+            }
+        }
+
+            public static List<Person> PeopleAdder(string[] input)
+            {
+                List<Person> people = new List<Person>();
+                foreach (var line in input)
+                {
+                    string[] parts = line.Split(',');
+
+                    if (parts.Length >= 6)
+                    {
+                        var personNummer = parts[0].Replace("-", "");
+                        var person = new Person()
+                        {
+                            PersonNummer = personNummer,
+                            LastName = parts[1],
+                            FirstName = parts[2],
+                            IsHealthcareWorker = (int.Parse(parts[3]) == 1) ? true : false,
+                            IsInDanger = (int.Parse(parts[4]) == 1) ? true : false,
+                            Infected = (int.Parse(parts[5]) == 1) ? true : false,
+                        };
+
+                        if (personNummer.Length == 12)
+                        {
+                            int birthYear = int.Parse(personNummer.Substring(0, 4));
+                            int birthMonth = int.Parse(personNummer.Substring(4, 2));
+                            int birthDay = int.Parse(personNummer.Substring(6, 2));
+
+
+                            DateTime birthdate = new DateTime(birthYear, birthMonth, birthDay);
+                            person.Age = CalculateAge(birthdate);
+                            person.BirthDate = birthdate;
+
+                        }
+                        else if (personNummer.Length == 10)
+                        {
+                            int yearPrefix = int.Parse(personNummer.Substring(0, 2));
+                            int birthMonth = int.Parse(personNummer.Substring(2, 2));
+                            int birthDay = int.Parse(personNummer.Substring(4, 2));
+
+                            int birthYear = (yearPrefix >= 0 && yearPrefix <= 18) ? 2000 + yearPrefix : 1900 + yearPrefix;
+
+                            DateTime birthdate = new DateTime(birthYear, birthMonth, birthDay);
+                            person.BirthDate = birthdate;
+                            person.Age = CalculateAge(birthdate);
+
+                        }
+                        people.Add(person);
+                    }
+                }
+                return people;
+            }
+
+            public static int CalculateAge(DateTime birthdate)
+            {
+                DateTime now = DateTime.Now;
+
+                int age = now.Year - birthdate.Year;
+
+                if (now.Month < birthdate.Month || (now.Month == birthdate.Month && now.Day < birthdate.Day))
+                {
+                    age--;
+                }
+                return age;
+            }
+
+            public static string[] ReadFromCSV(string inputFilePath)
+
+            {
+                string[] lines = File.ReadAllLines(inputFilePath);
+
+                return lines;
+            }
+            public static void SaveToCSV(string[] data)
+            {
+
+                File.WriteAllLines(fileSettings.OutputFilePath, data);
+            }
+
+            public static int ShowMenu(string prompt, IEnumerable<string> options)
+            {
+                if (options == null || options.Count() == 0)
+                {
+                    throw new ArgumentException("Cannot show a menu for an empty list of options.");
+                }
+
+                Console.WriteLine(prompt);
+
+                // Hide the cursor that will blink after calling ReadKey.
+                Console.CursorVisible = false;
+
+                // Calculate the width of the widest option so we can make them all the same width later.
+                int width = options.Max(option => option.Length);
+
+                int selected = 0;
+                int top = Console.CursorTop;
+                for (int i = 0; i < options.Count(); i++)
+                {
+                    // Start by highlighting the first option.
+                    if (i == 0)
+                    {
+                        Console.BackgroundColor = ConsoleColor.Blue;
+                        Console.ForegroundColor = ConsoleColor.White;
+                    }
+
+                    var option = options.ElementAt(i);
+                    // Pad every option to make them the same width, so the highlight is equally wide everywhere.
+                    Console.WriteLine("- " + option.PadRight(width));
+
+                    Console.ResetColor();
+                }
+                Console.CursorLeft = 0;
+                Console.CursorTop = top - 1;
+
+                ConsoleKey? key = null;
+                while (key != ConsoleKey.Enter)
+                {
+                    key = Console.ReadKey(intercept: true).Key;
+
+                    // First restore the previously selected option so it's not highlighted anymore.
+                    Console.CursorTop = top + selected;
+                    string oldOption = options.ElementAt(selected);
+                    Console.Write("- " + oldOption.PadRight(width));
+                    Console.CursorLeft = 0;
+                    Console.ResetColor();
+
+                    // Then find the new selected option.
+                    if (key == ConsoleKey.DownArrow)
+                    {
+                        selected = Math.Min(selected + 1, options.Count() - 1);
+                    }
+                    else if (key == ConsoleKey.UpArrow)
+                    {
+                        selected = Math.Max(selected - 1, 0);
+                    }
+
+                    // Finally highlight the new selected option.
+                    Console.CursorTop = top + selected;
                     Console.BackgroundColor = ConsoleColor.Blue;
                     Console.ForegroundColor = ConsoleColor.White;
+                    string newOption = options.ElementAt(selected);
+                    Console.Write("- " + newOption.PadRight(width));
+                    Console.CursorLeft = 0;
+                    // Place the cursor one step above the new selected option so that we can scroll and also see the option above.
+                    Console.CursorTop = top + selected - 1;
+                    Console.ResetColor();
                 }
 
-                var option = options.ElementAt(i);
-                // Pad every option to make them the same width, so the highlight is equally wide everywhere.
-                Console.WriteLine("- " + option.PadRight(width));
+                // Afterwards, place the cursor below the menu so we can see whatever comes next.
+                Console.CursorTop = top + options.Count();
 
-                Console.ResetColor();
+                // Show the cursor again and return the selected option.
+                Console.CursorVisible = true;
+                return selected;
             }
-            Console.CursorLeft = 0;
-            Console.CursorTop = top - 1;
-
-            ConsoleKey? key = null;
-            while (key != ConsoleKey.Enter)
-            {
-                key = Console.ReadKey(intercept: true).Key;
-
-                // First restore the previously selected option so it's not highlighted anymore.
-                Console.CursorTop = top + selected;
-                string oldOption = options.ElementAt(selected);
-                Console.Write("- " + oldOption.PadRight(width));
-                Console.CursorLeft = 0;
-                Console.ResetColor();
-
-                // Then find the new selected option.
-                if (key == ConsoleKey.DownArrow)
-                {
-                    selected = Math.Min(selected + 1, options.Count() - 1);
-                }
-                else if (key == ConsoleKey.UpArrow)
-                {
-                    selected = Math.Max(selected - 1, 0);
-                }
-
-                // Finally highlight the new selected option.
-                Console.CursorTop = top + selected;
-                Console.BackgroundColor = ConsoleColor.Blue;
-                Console.ForegroundColor = ConsoleColor.White;
-                string newOption = options.ElementAt(selected);
-                Console.Write("- " + newOption.PadRight(width));
-                Console.CursorLeft = 0;
-                // Place the cursor one step above the new selected option so that we can scroll and also see the option above.
-                Console.CursorTop = top + selected - 1;
-                Console.ResetColor();
-            }
-
-            // Afterwards, place the cursor below the menu so we can see whatever comes next.
-            Console.CursorTop = top + options.Count();
-
-            // Show the cursor again and return the selected option.
-            Console.CursorVisible = true;
-            return selected;
         }
-    }
 
-    [TestClass]
-    public class ProgramTests
-    {
-        [TestMethod]
-        public void ExampleTest()
+        [TestClass]
+        public class ProgramTests
         {
-            // Arrange
-            string[] input =
+            [TestMethod]
+            public void ExampleTest()
             {
+                // Arrange
+                string[] input =
+                {
                 "19720906-1111,Elba,Idris,0,0,1",
                 "8102032222,Efternamnsson,Eva,1,1,0"
             };
-            int doses = 10;
-            bool vaccinateChildren = false;
+                int doses = 10;
+                bool vaccinateChildren = false;
 
-            // Act
-            string[] output = Program.CreateVaccinationOrder(input, doses, vaccinateChildren);
+                // Act
+                string[] output = Program.CreateVaccinationOrder(input, doses, vaccinateChildren);
 
-            // Assert
-            Assert.AreEqual(output.Length, 2);
-            Assert.AreEqual("19810203-2222,Efternamnsson,Eva,2", output[0]);
-            Assert.AreEqual("19720906-1111,Elba,Idris,1", output[1]);
+                // Assert
+                Assert.AreEqual(output.Length, 2);
+                Assert.AreEqual("19810203-2222,Efternamnsson,Eva,2", output[0]);
+                Assert.AreEqual("19720906-1111,Elba,Idris,1", output[1]);
+            }
         }
     }
-}
+
 /*
 Random list of people added by chatgpt
 19720906-1111,Elba,Idris,0,0,1
