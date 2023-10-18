@@ -160,13 +160,18 @@ namespace inlamning4
             vaccinateChildren = vaccinationSettings.VaccinateChildren;
             List<Person> people = PeopleAdder(input);
             List<Person> filteredPeople = people.Where(person => vaccinateChildren || person.Age >= 18).ToList();
-
+            /* Ordning på listan: 1 vårdpersonal
+             * 2 folk över 65
+             * 3 folk i riskgrupp
+             * 4 alla andra
+             * */
+            
             var prioritizedPeople = filteredPeople.OrderByDescending(p => p.IsHealthcareWorker)
                 .ThenByDescending(p => p.Age)
                 .ThenBy(p => p.BirthDate.Month)
                 .ThenBy(p => p.BirthDate.Day)
                 .ThenByDescending(p => p.IsInDanger)
-                .ThenByDescending(p => (vaccinateChildren && p.Age <= 18))
+                
                 .Select(p => $"{p.PersonNummer},{p.LastName}, {p.FirstName}, {p.Age}")
                 .ToArray();
 
