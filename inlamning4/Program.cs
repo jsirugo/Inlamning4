@@ -255,7 +255,6 @@ namespace inlamning4
 
                 if (availableDoses <= 0)
                 {
-                    Console.WriteLine("Inga doser att ge");
                     break;
                 }
 
