@@ -180,22 +180,21 @@ namespace inlamning4
         static void ChangeOutputFile()
         {
             bool validPath = false;
-
+            
             while (!validPath)
             {
                 Console.Write("Ange plats för utadatafil: ");
 
                 string path = Console.ReadLine();
 
-                if (!Directory.Exists(path))
-                {
-                    Console.WriteLine("Mappen du har angett existerar inte. Försök igen." +
-                        " Ange enbart namn fram till mappen du vill spara i.");
-                }
-                else
+                if (Directory.Exists(path) || File.Exists(path))
                 {
                     fileSettings.OutputFilePath = Path.Combine(path, "Vaccinations.csv");
                     validPath = true;
+                }
+                else
+                {
+                    Console.WriteLine("Mappen du har angett existerar inte. Försök igen.");
                 }
             }
         }
@@ -225,7 +224,7 @@ namespace inlamning4
 
 
                 var result = prioritizedPeople
-                    .Select(p => $"{p.PersonNummer},{p.LastName}, {p.FirstName}, {p.Age}, {p.Doses}")
+                    .Select(p => $"{p.PersonNummer},{p.LastName}, {p.FirstName}, {p.Doses}")
                     .ToArray();
 
                 return result;
