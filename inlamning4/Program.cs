@@ -190,39 +190,28 @@ namespace inlamning4
         //Då Directory.Exists i sig tillåter ofullständiga sökvägar. 
         static void ChangeOutputFile()
         {
-            bool validPath = false;
-
-            while (!validPath)
+            while (true)
             {
-
-                Console.Write("Enter the directory path where you want to save the file: ");
-
+                Console.Write("Ange väg till utdatafil: ");
                 string input = Console.ReadLine();
-
                 string path = Path.GetDirectoryName(input);
-                bool isValidPath = IsPathValid(path);
 
-                if (isValidPath)
+                if (IsPathValid(path))
                 {
                     if (!input.EndsWith(".csv", StringComparison.OrdinalIgnoreCase))
-                    {
                         input += ".csv";
-                    }
                     fileSettings.OutputFilePath = input;
-                    validPath = true;
+                    break;
                 }
-                else
-                {
-                    Console.WriteLine("Valid path: false");
-                }
-            }
 
-            static bool IsPathValid(string path)
-            {
-                string directory = Path.GetDirectoryName(path);
-                return !string.IsNullOrEmpty(directory) && Directory.Exists(directory);
+                Console.WriteLine("Felaktig sökväg");
             }
+        }
 
+        static bool IsPathValid(string path)
+        {
+            string directory = Path.GetDirectoryName(path);
+            return !string.IsNullOrEmpty(directory) && Directory.Exists(directory);
         }
         public static string[] CreateVaccinationOrder(string[] input, int doses, bool vaccinateChildren)
         {
