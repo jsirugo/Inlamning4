@@ -185,26 +185,44 @@ namespace inlamning4
                 }
             }
         }
+        //för framtida referens till dokumentationen tog detta mig väldigt lång tid att få till
+        //Jag fick leta länge för att hitta en lösning där programmet ignorerar allt efter en giltlig sökväg
+        //Då Directory.Exists i sig tillåter ofullständiga sökvägar. 
         static void ChangeOutputFile()
         {
             bool validPath = false;
 
             while (!validPath)
             {
-                Console.Write("Ange plats för utadatafil: ");
 
-                string path = Console.ReadLine();
+                Console.Write("Enter the directory path where you want to save the file: ");
 
-                if (Directory.Exists(path) || File.Exists(path))
+                string input = Console.ReadLine();
+
+                string path = Path.GetDirectoryName(input);
+                bool isValidPath = IsPathValid(path);
+
+                if (isValidPath)
                 {
-                    fileSettings.OutputFilePath = Path.Combine(path, "Vaccinations.csv");
+                    if (!input.EndsWith(".csv", StringComparison.OrdinalIgnoreCase))
+                    {
+                        input += ".csv";
+                    }
+                    fileSettings.OutputFilePath = input;
                     validPath = true;
                 }
                 else
                 {
-                    Console.WriteLine("Mappen du har angett existerar inte. Försök igen.");
+                    Console.WriteLine("Valid path: false");
                 }
             }
+
+            static bool IsPathValid(string path)
+            {
+                string directory = Path.GetDirectoryName(path);
+                return !string.IsNullOrEmpty(directory) && Directory.Exists(directory);
+            }
+
         }
         public static string[] CreateVaccinationOrder(string[] input, int doses, bool vaccinateChildren)
         {
