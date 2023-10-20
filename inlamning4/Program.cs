@@ -117,8 +117,15 @@ namespace inlamning4
 
                     if (int.TryParse(Console.ReadLine(), out int doses))
                     {
-                        vaccinationSettings.AvailableDoses = doses;
-                        return;
+                        if (doses >= 0)
+                        {
+                            vaccinationSettings.AvailableDoses = doses;
+                            return;
+                        }
+                        else
+                        {
+                            Console.WriteLine("Antal doser kan inte vara mindre än 0.");
+                        }
                     }
                     else
                     {
@@ -181,7 +188,7 @@ namespace inlamning4
         static void ChangeOutputFile()
         {
             bool validPath = false;
-            
+
             while (!validPath)
             {
                 Console.Write("Ange plats för utadatafil: ");
@@ -222,16 +229,16 @@ namespace inlamning4
 
             DoseDistributionSystem(prioritizedPeople, vaccinationSettings);
 
-       
-                var result = prioritizedPeople
-                    .Select(p => $"{p.PersonNummer},{p.LastName}, {p.FirstName}, {p.Doses}")
-                    .ToArray();
 
-                return result;
+            var result = prioritizedPeople
+                .Select(p => $"{p.PersonNummer},{p.LastName}, {p.FirstName}, {p.Doses}")
+                .ToArray();
 
-            }
+            return result;
 
-        
+        }
+
+
 
         public static void DoseDistributionSystem(List<Person> prioritizedPeople, VaccinationSettings vaccinationSettings)
         {
@@ -266,7 +273,7 @@ namespace inlamning4
         public static List<Person> PeopleAdder(string[] input)
         {
             List<Person> people = new List<Person>();
-            if(input == null)
+            if (input == null)
             {
                 Console.WriteLine("Fel i inläsning av data");
                 return null;
@@ -274,63 +281,63 @@ namespace inlamning4
             else
             {
 
-            foreach (var line in input)
-            {
-                string[] parts = line.Split(',');
-
-
-                if (parts.Length >= 6)
+                foreach (var line in input)
                 {
-                    var personNummer = parts[0];
-                    if (personNummer.ElementAt(personNummer.Length - 5) != '-')
+                    string[] parts = line.Split(',');
+
+
+                    if (parts.Length >= 6)
                     {
-                        personNummer = personNummer.Insert(personNummer.Length - 4, "-");
-                    }
-                    var person = new Person()
-                    {
-                        PersonNummer = personNummer,
-                        LastName = parts[1],
-                        FirstName = parts[2],
-                        IsHealthcareWorker = (int.Parse(parts[3]) == 1) ? true : false,
-                        RiskGroup = (int.Parse(parts[4]) == 1) ? true : false,
-                        Infected = (int.Parse(parts[5]) == 1) ? true : false,
-                    };
-
-                    if (personNummer.Length == 13)
-                    {
-                        int birthYear = int.Parse(personNummer.Substring(0, 4));
-                        int birthMonth = int.Parse(personNummer.Substring(4, 2));
-                        int birthDay = int.Parse(personNummer.Substring(6, 2));
-
-                        DateTime birthdate = new DateTime(birthYear, birthMonth, birthDay);
-                        person.Age = CalculateAge(birthdate);
-                        person.BirthDate = birthdate;
-
-                    }
-                    else if (personNummer.Length == 11)
-                    {
-                        int yearPrefix = int.Parse(personNummer.Substring(0, 2));
-                        int birthMonth = int.Parse(personNummer.Substring(2, 2));
-                        int birthDay = int.Parse(personNummer.Substring(4, 2));
-
-                        int birthYear = (yearPrefix >= 0 && yearPrefix <= 18) ? 2000 + yearPrefix : 1900 + yearPrefix;
-
-                        DateTime birthdate = new DateTime(birthYear, birthMonth, birthDay);
-                        person.BirthDate = birthdate;
-                        person.Age = CalculateAge(birthdate);
-
-                        if (!personNummer.StartsWith("19") || !personNummer.StartsWith("20"))
+                        var personNummer = parts[0];
+                        if (personNummer.ElementAt(personNummer.Length - 5) != '-')
                         {
-                            person.PersonNummer = birthYear.ToString() + personNummer.Substring(2, 9);
+                            personNummer = personNummer.Insert(personNummer.Length - 4, "-");
+                        }
+                        var person = new Person()
+                        {
+                            PersonNummer = personNummer,
+                            LastName = parts[1],
+                            FirstName = parts[2],
+                            IsHealthcareWorker = (int.Parse(parts[3]) == 1) ? true : false,
+                            RiskGroup = (int.Parse(parts[4]) == 1) ? true : false,
+                            Infected = (int.Parse(parts[5]) == 1) ? true : false,
+                        };
 
-                        } // fick bli här nere då åldersberäkningen sker först här
+                        if (personNummer.Length == 13)
+                        {
+                            int birthYear = int.Parse(personNummer.Substring(0, 4));
+                            int birthMonth = int.Parse(personNummer.Substring(4, 2));
+                            int birthDay = int.Parse(personNummer.Substring(6, 2));
+
+                            DateTime birthdate = new DateTime(birthYear, birthMonth, birthDay);
+                            person.Age = CalculateAge(birthdate);
+                            person.BirthDate = birthdate;
+
+                        }
+                        else if (personNummer.Length == 11)
+                        {
+                            int yearPrefix = int.Parse(personNummer.Substring(0, 2));
+                            int birthMonth = int.Parse(personNummer.Substring(2, 2));
+                            int birthDay = int.Parse(personNummer.Substring(4, 2));
+
+                            int birthYear = (yearPrefix >= 0 && yearPrefix <= 18) ? 2000 + yearPrefix : 1900 + yearPrefix;
+
+                            DateTime birthdate = new DateTime(birthYear, birthMonth, birthDay);
+                            person.BirthDate = birthdate;
+                            person.Age = CalculateAge(birthdate);
+
+                            if (!personNummer.StartsWith("19") || !personNummer.StartsWith("20"))
+                            {
+                                person.PersonNummer = birthYear.ToString() + personNummer.Substring(2, 9);
+
+                            } // fick bli här nere då åldersberäkningen sker först här
+                        }
+                        people.Add(person);
                     }
-                    people.Add(person);
                 }
+                return people;
             }
-            return people;
         }
-            }
 
         public static int CalculateAge(DateTime birthdate)
         {
@@ -356,43 +363,45 @@ namespace inlamning4
                 string line = lines[currentLine];
                 string[] parts = line.Split(',');
 
-                
+
 
                 if (parts[0].Length > 13 || parts[0].Length < 10)
                 {
-                    Console.WriteLine("Fel på rad: " + (currentLine + 1) +": ogiltigt personnummer, för långt eller för kort.");
+                    Console.WriteLine("Fel på rad: " + (currentLine + 1) + ": ogiltigt personnummer, för långt eller för kort.");
                     errorCounter++;
                 }
 
                 if (ContainsLetter(parts[0]))
                 {
-                    Console.WriteLine("Fel på rad: " + (currentLine + 1) +": Personnumret innehåller en bokstav.");
+                    Console.WriteLine("Fel på rad: " + (currentLine + 1) + ": Personnumret innehåller en bokstav.");
                     errorCounter++;
                 }
 
-                
+
                 if (IsDigitsOrEmpty(parts[1]))
                 {
                     Console.WriteLine("Fel på rad: " + (currentLine + 1) + ": Efternamn innehåller en siffra eller är tom.");
                     errorCounter++;
                 }
 
-              
+
                 if (IsDigitsOrEmpty(parts[2]))
                 {
-                    Console.WriteLine("Fel på rad: "+ (currentLine + 1)+ ":Förnamnet innehåller antingen en siffra, eller är tom.");
+                    Console.WriteLine("Fel på rad: " + (currentLine + 1) + ":Förnamnet innehåller antingen en siffra, eller är tom.");
                     errorCounter++;
                 }
 
                 if (parts[3] != "0" && parts[3] != "1")
                 {
-                    Console.WriteLine("Fel på rad: "+(currentLine+1) +": värdet är annat än 1 eller 0.");
+                    Console.WriteLine("Fel på rad: " + (currentLine + 1) + ": värdet är annat än 1 eller 0.");
                     errorCounter++;
-                } if (parts[4] != "0" && parts[4] != "1")
+                }
+                if (parts[4] != "0" && parts[4] != "1")
                 {
                     Console.WriteLine("Fel på rad: " + (currentLine + 1) + ": värdet är annat än 1 eller 0.");
                     errorCounter++;
-                } if (parts[5] != "0" && parts[5] != "1")
+                }
+                if (parts[5] != "0" && parts[5] != "1")
                 {
                     Console.WriteLine("Fel på rad: " + (currentLine + 1) + ": värdet är annat än 1 eller 0.");
                     errorCounter++;
@@ -401,22 +410,22 @@ namespace inlamning4
 
             if (errorCounter > 0)
             {
-                Console.WriteLine("Antal fel funna: "+ errorCounter);
+                Console.WriteLine("Antal fel funna: " + errorCounter);
                 Console.WriteLine("Felaktigt format på rader, återgår till huvudmeny.");
 
                 for (int i = 5; i > 0; i--)
                 {
-                    Console.Write("Time remaining: "+i+ " sekunder\r");
-                    Thread.Sleep(1000); 
+                    Console.Write("Time remaining: " + i + " sekunder\r");
+                    Thread.Sleep(1000);
                 }
 
                 Console.Clear();
                 ShowMainMenu();
 
             }
-           
-                return lines;
-            
+
+            return lines;
+
         }
 
         public static bool ContainsLetter(string input)
