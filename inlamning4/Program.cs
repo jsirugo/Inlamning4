@@ -252,7 +252,7 @@ namespace inlamning4
                 }
                 else if (!person.Infected && availableDoses == 1 && person.Doses == 0)
                 {
-                    Console.WriteLine("Not enough doses for a complete vaccination.");
+                    Console.WriteLine("Finns ej tillräckligt med doser för fullständig vaccinering.");
                 }
 
                 if (availableDoses <= 0)
@@ -319,7 +319,7 @@ namespace inlamning4
                         person.BirthDate = birthdate;
                         person.Age = CalculateAge(birthdate);
 
-                        if (!personNummer.StartsWith("19") && !personNummer.StartsWith("20"))
+                        if (!personNummer.StartsWith("19") || !personNummer.StartsWith("20"))
                         {
                             person.PersonNummer = birthYear.ToString() + personNummer.Substring(2, 9);
 
@@ -346,7 +346,6 @@ namespace inlamning4
         }
 
 
-
         public static string[] ReadFromCSV(string inputFilePath)
         {
             string[] lines = File.ReadAllLines(inputFilePath);
@@ -361,7 +360,7 @@ namespace inlamning4
 
                 if (parts[0].Length > 13 || parts[0].Length < 10)
                 {
-                    Console.WriteLine("Error at line:" + (currentLine + 1) +": ogiltigt personnummer, för långt eller för kort.");
+                    Console.WriteLine("Fel på rad: " + (currentLine + 1) +": ogiltigt personnummer, för långt eller för kort.");
                     errorCounter++;
                 }
 
@@ -381,7 +380,7 @@ namespace inlamning4
               
                 if (IsDigitsOrEmpty(parts[2]))
                 {
-                    Console.WriteLine("Fel på rad:"+ (currentLine + 1)+ ":Förnamnet innehåller antingen en siffra, eller är tom.");
+                    Console.WriteLine("Fel på rad: "+ (currentLine + 1)+ ":Förnamnet innehåller antingen en siffra, eller är tom.");
                     errorCounter++;
                 }
 
@@ -402,12 +401,12 @@ namespace inlamning4
 
             if (errorCounter > 0)
             {
-                Console.WriteLine("Total errors found: "+ errorCounter);
+                Console.WriteLine("Antal fel funna: "+ errorCounter);
                 Console.WriteLine("Felaktigt format på rader, återgår till huvudmeny.");
 
                 for (int i = 5; i > 0; i--)
                 {
-                    Console.Write($"Time remaining: {i} seconds\r");
+                    Console.Write("Time remaining: "+i+ " sekunder\r");
                     Thread.Sleep(1000); 
                 }
 
@@ -418,10 +417,7 @@ namespace inlamning4
            
                 return lines;
             
-
-            
         }
-
 
         public static bool ContainsLetter(string input)
         {
