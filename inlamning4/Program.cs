@@ -69,7 +69,7 @@ namespace inlamning4
                 if (menuOption == 0)
                 {
                     string[] vaccinationUnOrdered = ReadFromCSV(fileSettings.InputFilePath);
-                    string[] vaccinationOrdered = CreateVaccinationOrder(vaccinationUnOrdered, vaccinationSettings );
+                    string[] vaccinationOrdered = CreateVaccinationOrder(vaccinationUnOrdered, vaccinationSettings);
                     SaveToCSV(vaccinationOrdered);
                     Console.Clear();
                     Console.WriteLine("Resultatet har sparats i:" + fileSettings.OutputFilePath);
@@ -115,17 +115,17 @@ namespace inlamning4
                 try
                 {
                     doses = int.Parse(Console.ReadLine());
-                   
-                        if (doses >= 0)
-                        {
-                            vaccinationSettings.AvailableDoses = doses;
-                            return; 
-                        }
-                        else
-                        {
-                            Console.WriteLine("Antal doser kan inte vara mindre än 0.");
-                        }
-                 
+
+                    if (doses >= 0)
+                    {
+                        vaccinationSettings.AvailableDoses = doses;
+                        return;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Antal doser kan inte vara mindre än 0.");
+                    }
+
                 }
                 catch (Exception)
                 {
@@ -161,7 +161,7 @@ namespace inlamning4
                     Console.WriteLine("Nuvarande indatafilväg: " + fileSettings.InputFilePath);
                     Console.Write("Ange sökväg till ny indatafil: ");
 
-                     newPath = Console.ReadLine();
+                    newPath = Console.ReadLine();
 
                     if (!File.Exists(newPath))
                     {
@@ -194,17 +194,17 @@ namespace inlamning4
                 string filename = Path.GetFileName(input);
 
                 if (IsPathValid(path))
-                { 
+                {
                     //gör if else med funktionen kolla om inte .csv. Om ändelse inte
                     // .csv, sätt .csv. Om tom, sätt standardvärde
-                    
+
 
                     if (string.IsNullOrEmpty(filename))
                     {
                         fileSettings.OutputFilePath = "C:\\Windows\\Temp\\Vaccinations.csv";
                         Console.WriteLine("Utdata felaktigt inmatad och ställd till standardvärde");
                     }
-                   
+
                     else if (!input.EndsWith(".csv", StringComparison.OrdinalIgnoreCase))
                     {
 
@@ -218,7 +218,7 @@ namespace inlamning4
                         fileSettings.OutputFilePath = input;
                         break;
                     }
-                    
+
                 }
 
                 Console.WriteLine("Felaktig sökväg");
@@ -232,7 +232,7 @@ namespace inlamning4
         }
         public static string[] CreateVaccinationOrder(string[] input, VaccinationSettings vaccinationSettings)
         {
-           
+
             List<Person> people = PeopleAdder(input);
             List<Person> filteredPeople = people.Where(person => vaccinationSettings.VaccinateChildren || person.Age >= 18).ToList();
             /* Ordning på listan: 1 vårdpersonal
@@ -482,7 +482,7 @@ namespace inlamning4
 
             }
             else { File.WriteAllLines(fileSettings.OutputFilePath, data); }
-            
+
         }
 
         public static int ShowMenu(string prompt, IEnumerable<string> options)
@@ -567,7 +567,7 @@ namespace inlamning4
     public class ProgramTests
     {
         [TestMethod]
-        public void CreateVaccinationOrder_Test()
+        public void KidTesterVaccinateOff()
         {
             // Arrange
             VaccinationSettings vaccinationSettings = new VaccinationSettings();
@@ -602,7 +602,7 @@ namespace inlamning4
                 "8102032222,Efternamnsson,Eva,1,1,0",
                 "200807160039,Skrikapansson,Bob,0,0,0"
             };
-          
+
 
             // Act
             string[] output = Program.CreateVaccinationOrder(input, vaccinationSettings);
@@ -639,6 +639,79 @@ namespace inlamning4
             Assert.AreEqual("20010718-5678,Johansson,David,2", output[2]);
             Assert.AreEqual("20080716-0039,Skrikapansson,Bob,0", output[3]);
 
+        }
+        [TestMethod]
+        public void VaccinationOrderAllVariablesNoChildren()
+        {
+            // Arrange
+            VaccinationSettings vaccinationSettings = new VaccinationSettings();
+
+            vaccinationSettings.VaccinateChildren = false;
+
+            string[] input =
+            {
+            "19880808-8888,Elba,VårdEjRisk,1,0,0",
+"19880807-8888,Efternamnsson,VårdRisk,1,1,0",
+"19880806-8888,Andersson,EjVårdRisk,0,1,0",
+"19880805-8888,Karlsson,EjRiskEjVård,0,0,0",
+"19200808-8888,Persson,GammalEjVårdEjRisk,0,0,0",
+"20200808-8888,Johansson,UngEjVårdEjRisk,0,0,0",
+"200808-8888,Gustafsson,GammalRisk,0,1,0",
+"20200807-8888,Nyqvist,UngRisk,0,1,0",
+"19200803-8888,Svensson,GammalInfekterad,0,0,1",
+"20200806-8888,Bergman,UngInfekterad,0,0,1",
+        };
+
+            // Act
+            string[] output = Program.CreateVaccinationOrder(input, vaccinationSettings);
+
+            // Assert
+            Assert.AreEqual(7, output.Length);
+            Assert.AreEqual("19880807-8888,Efternamnsson,VårdRisk,0", output[0]);
+            Assert.AreEqual("19880808-8888,Elba,VårdEjRisk,0", output[1]);
+            Assert.AreEqual("19200808-8888,Gustafsson,GammalRisk,0", output[2]);
+            Assert.AreEqual("19200803-8888,Svensson,GammalInfekterad,0", output[3]);
+            Assert.AreEqual("19200808-8888,Persson,GammalEjVårdEjRisk,0", output[4]);
+            Assert.AreEqual("19880806-8888,Andersson,EjVårdRisk,0", output[5]);
+            Assert.AreEqual("19880805-8888,Karlsson,EjRiskEjVård,0", output[6]);
+        }
+        [TestMethod]
+        public void VaccinationOrderAllVariablesWithChildren()
+        {
+            // Arrange
+            VaccinationSettings vaccinationSettings = new VaccinationSettings();
+
+            vaccinationSettings.VaccinateChildren = true;
+
+            string[] input =
+            {
+            "19880808-8888,Elba,VårdEjRisk,1,0,0",
+            "19880807-8888,Efternamnsson,VårdRisk,1,1,0",
+            "19880806-8888,Andersson,EjVårdRisk,0,1,0",
+            "19880805-8888,Karlsson,EjRiskEjVård,0,0,0",
+            "19200808-8888,Persson,GammalEjVårdEjRisk,0,0,0",
+            "20200808-8888,Johansson,UngEjVårdEjRisk,0,0,0",
+            "200808-8888,Gustafsson,GammalRisk,0,1,0",
+            "20200807-8888,Nyqvist,UngRisk,0,1,0",
+            "19200803-8888,Svensson,GammalInfekterad,0,0,1",
+            "20200806-8888,Bergman,UngInfekterad,0,0,1",
+            };
+
+            // Act
+            string[] output = Program.CreateVaccinationOrder(input, vaccinationSettings);
+
+            // Assert
+            Assert.AreEqual(10, output.Length);
+            Assert.AreEqual("19880807-8888,Efternamnsson,VårdRisk,0", output[0]);
+            Assert.AreEqual("19880808-8888,Elba,VårdEjRisk,0", output[1]);
+            Assert.AreEqual("19200808-8888,Gustafsson,GammalRisk,0", output[2]);
+            Assert.AreEqual("19200803-8888,Svensson,GammalInfekterad,0", output[3]);
+            Assert.AreEqual("19200808-8888,Persson,GammalEjVårdEjRisk,0", output[4]);
+            Assert.AreEqual("19880806-8888,Andersson,EjVårdRisk,0", output[5]);
+            Assert.AreEqual("20200807-8888,Nyqvist,UngRisk,0", output[6]);
+            Assert.AreEqual("19880805-8888,Karlsson,EjRiskEjVård,0", output[7]);
+            Assert.AreEqual("20200806-8888,Bergman,UngInfekterad,0", output[8]);
+            Assert.AreEqual("20200808-8888,Johansson,UngEjVårdEjRisk,0", output[9]);
         }
     }
 }
