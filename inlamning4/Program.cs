@@ -34,7 +34,6 @@ namespace inlamning4
         public bool RiskGroup;
         public bool Infected;
 
-
     }
     public class Program
     {
@@ -120,7 +119,7 @@ namespace inlamning4
                         if (doses >= 0)
                         {
                             vaccinationSettings.AvailableDoses = doses;
-                            return;
+                            return; 
                         }
                         else
                         {
@@ -464,7 +463,26 @@ namespace inlamning4
         }
         public static void SaveToCSV(string[] data)
         {
+            if (File.Exists(fileSettings.OutputFilePath))
+            {
+                int option = ShowMenu("Filen existerar redan, vill du skriva över den?", new[]
+                  {
+                    "ja",
+                    "nej",
+                });
+                if (option == 0)
+                {
+                    File.WriteAllLines(fileSettings.OutputFilePath, data);
+                }
+                else
+                {
+                    Console.WriteLine("Användare valt att ej skriva över fil, återgår till meny");
+                    return;
+                }
 
+         
+            }
+            
             File.WriteAllLines(fileSettings.OutputFilePath, data);
         }
 
