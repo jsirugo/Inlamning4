@@ -215,8 +215,9 @@ namespace inlamning4
                     else
                     {
                         fileSettings.OutputFilePath = input;
+                        break;
                     }
-                    break;
+                    
                 }
 
                 Console.WriteLine("Felaktig sökväg");
@@ -479,6 +480,7 @@ namespace inlamning4
                 }
 
             }
+            else { File.WriteAllLines(fileSettings.OutputFilePath, data); }
             
         }
 
@@ -575,7 +577,7 @@ namespace inlamning4
             {
             "19720906-1111,Elba,Idris,0,0,1",
             "8102032222,Efternamnsson,Eva,1,1,0",
-            "200807160039,Skrikapansson,Bob,0,0,0"
+            "200607160039,Skrikapansson,Bob,0,0,0"
         };
 
             // Act
@@ -586,6 +588,7 @@ namespace inlamning4
             Assert.AreEqual("19810203-2222,Efternamnsson,Eva,2", output[0]);
             Assert.AreEqual("19720906-1111,Elba,Idris,1", output[1]);
         }
+
         [TestMethod]
         public void KidTesterVaccinateON()
         {
