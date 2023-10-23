@@ -12,7 +12,7 @@ namespace inlamning4
 {
     public class VaccinationSettings
     {
-        public int AvailableDoses;
+        public int AvailableDoses = 10;
         public bool VaccinateChildren = false;
     }
     public class FileSettings
@@ -253,7 +253,7 @@ namespace inlamning4
 
 
             var result = prioritizedPeople
-                .Select(p => $"{p.PersonNummer},{p.LastName}, {p.FirstName}, {p.Doses}")
+                .Select(p => $"{p.PersonNummer},{p.LastName},{p.FirstName},{p.Doses}")
                 .ToArray();
 
             return result;
@@ -386,7 +386,6 @@ namespace inlamning4
                 string[] parts = line.Split(',');
 
 
-
                 if (parts[0].Length > 13 || parts[0].Length < 10)
                 {
                     Console.WriteLine("Fel på rad: " + (currentLine + 1) + ": ogiltigt personnummer, för långt eller för kort.");
@@ -480,10 +479,8 @@ namespace inlamning4
                     return;
                 }
 
-         
             }
             
-            File.WriteAllLines(fileSettings.OutputFilePath, data);
         }
 
         public static int ShowMenu(string prompt, IEnumerable<string> options)
