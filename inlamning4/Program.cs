@@ -12,7 +12,7 @@ namespace inlamning4
 {
     public class VaccinationSettings
     {
-        public int AvailableDoses = 10;
+        public int AvailableDoses = 0;
         public bool VaccinateChildren = false;
     }
     public class FileSettings
@@ -69,7 +69,7 @@ namespace inlamning4
                 if (menuOption == 0)
                 {
                     string[] vaccinationUnOrdered = ReadFromCSV(fileSettings.InputFilePath);
-                    string[] vaccinationOrdered = CreateVaccinationOrder(vaccinationUnOrdered, vaccinationSettings.AvailableDoses, vaccinationSettings.VaccinateChildren);
+                    string[] vaccinationOrdered = CreateVaccinationOrder(vaccinationUnOrdered, vaccinationSettings );
                     SaveToCSV(vaccinationOrdered);
                     Console.Clear();
                     Console.WriteLine("Resultatet har sparats i:" + fileSettings.OutputFilePath);
@@ -228,12 +228,11 @@ namespace inlamning4
             string directory = Path.GetDirectoryName(path);
             return !string.IsNullOrEmpty(directory) && Directory.Exists(directory);
         }
-        public static string[] CreateVaccinationOrder(string[] input, int doses, bool vaccinateChildren)
+        public static string[] CreateVaccinationOrder(string[] input, VaccinationSettings vaccinationSettings)
         {
-            doses = vaccinationSettings.AvailableDoses;
-            vaccinateChildren = vaccinationSettings.VaccinateChildren;
+           
             List<Person> people = PeopleAdder(input);
-            List<Person> filteredPeople = people.Where(person => vaccinateChildren || person.Age >= 18).ToList();
+            List<Person> filteredPeople = people.Where(person => vaccinationSettings.VaccinateChildren || person.Age >= 18).ToList();
             /* Ordning på listan: 1 vårdpersonal
              * 2 folk över 65
              * 3 folk i riskgrupp
@@ -565,24 +564,51 @@ namespace inlamning4
     public class ProgramTests
     {
         [TestMethod]
-        public void ExampleTest()
+        public void CreateVaccinationOrder_Test()
         {
             // Arrange
+            VaccinationSettings vaccinationSettings = new VaccinationSettings();
+            vaccinationSettings.AvailableDoses = 10;
+            vaccinationSettings.VaccinateChildren = false;
+
+            string[] input =
+            {
+            "19720906-1111,Elba,Idris,0,0,1",
+            "8102032222,Efternamnsson,Eva,1,1,0",
+            "200807160039,Skrikapansson,Bob,0,0,0"
+        };
+
+            // Act
+            string[] output = Program.CreateVaccinationOrder(input, vaccinationSettings);
+
+            // Assert
+            Assert.AreEqual(2, output.Length);
+            Assert.AreEqual("19810203-2222,Efternamnsson,Eva,2", output[0]);
+            Assert.AreEqual("19720906-1111,Elba,Idris,1", output[1]);
+        }
+        [TestMethod]
+        public void KidTesterVaccinateON()
+        {
+            VaccinationSettings vaccinationSettings = new VaccinationSettings();
+            vaccinationSettings.AvailableDoses = 10;
+            vaccinationSettings.VaccinateChildren = true;
             string[] input =
             {
                 "19720906-1111,Elba,Idris,0,0,1",
-                "8102032222,Efternamnsson,Eva,1,1,0"
+                "8102032222,Efternamnsson,Eva,1,1,0",
+                "200807160039,Skrikapansson,Bob,0,0,0"
             };
-            int doses = 10;
-            bool vaccinateChildren = false;
+          
 
             // Act
-            string[] output = Program.CreateVaccinationOrder(input, doses, vaccinateChildren);
+            string[] output = Program.CreateVaccinationOrder(input, vaccinationSettings);
 
             // Assert
-            Assert.AreEqual(output.Length, 2);
+            Assert.AreEqual(output.Length, 3);
             Assert.AreEqual("19810203-2222,Efternamnsson,Eva,2", output[0]);
             Assert.AreEqual("19720906-1111,Elba,Idris,1", output[1]);
+            Assert.AreEqual("20080716-0039,Skrikapansson,Bob,2", output[2]);
+
         }
     }
 }
