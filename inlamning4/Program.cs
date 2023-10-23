@@ -153,7 +153,7 @@ namespace inlamning4
         static void ChangeInputFile()
         {
             bool validPath = false;
-
+            string newPath = "";
             while (!validPath)
             {
                 try
@@ -161,7 +161,7 @@ namespace inlamning4
                     Console.WriteLine("Nuvarande indatafilväg: " + fileSettings.InputFilePath);
                     Console.Write("Ange sökväg till ny indatafil: ");
 
-                    string newPath = Console.ReadLine();
+                     newPath = Console.ReadLine();
 
                     if (!File.Exists(newPath))
                     {
@@ -169,7 +169,6 @@ namespace inlamning4
                     }
                     else
                     {
-                        fileSettings.InputFilePath = newPath;
                         validPath = true;
                     }
                 }
@@ -178,6 +177,8 @@ namespace inlamning4
                     Console.WriteLine("Ett oväntat fel uppstod: " + ex.Message);
                 }
             }
+            fileSettings.InputFilePath = newPath;
+
         }
         //för framtida referens till dokumentationen tog detta mig väldigt lång tid att få till
         //Jag fick leta länge för att hitta en lösning där programmet ignorerar allt efter en giltlig sökväg
@@ -611,6 +612,32 @@ namespace inlamning4
             Assert.AreEqual("19810203-2222,Efternamnsson,Eva,2", output[0]);
             Assert.AreEqual("19720906-1111,Elba,Idris,1", output[1]);
             Assert.AreEqual("20080716-0039,Skrikapansson,Bob,2", output[2]);
+
+        }
+        [TestMethod]
+        public void NotEnoughDoses()
+        {
+            VaccinationSettings vaccinationSettings = new VaccinationSettings();
+            vaccinationSettings.AvailableDoses = 6; // bör bli att det finns en över när bob ska ha två och då får han 0
+            vaccinationSettings.VaccinateChildren = true;
+            string[] input =
+            {
+                "19720906-1111,Elba,Idris,0,0,1",
+                "8102032222,Efternamnsson,Eva,1,1,0",
+                "200807160039,Skrikapansson,Bob,0,0,0",
+                "20010718-5678,Johansson,David,0,0,0"
+            };
+
+
+            // Act
+            string[] output = Program.CreateVaccinationOrder(input, vaccinationSettings);
+
+            // Assert
+            Assert.AreEqual(output.Length, 4);
+            Assert.AreEqual("19810203-2222,Efternamnsson,Eva,2", output[0]);
+            Assert.AreEqual("19720906-1111,Elba,Idris,1", output[1]);
+            Assert.AreEqual("20010718-5678,Johansson,David,2", output[2]);
+            Assert.AreEqual("20080716-0039,Skrikapansson,Bob,0", output[3]);
 
         }
     }
