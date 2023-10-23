@@ -651,16 +651,16 @@ namespace inlamning4
             string[] input =
             {
             "19880808-8888,Elba,VårdEjRisk,1,0,0",
-"19880807-8888,Efternamnsson,VårdRisk,1,1,0",
-"19880806-8888,Andersson,EjVårdRisk,0,1,0",
-"19880805-8888,Karlsson,EjRiskEjVård,0,0,0",
-"19200808-8888,Persson,GammalEjVårdEjRisk,0,0,0",
-"20200808-8888,Johansson,UngEjVårdEjRisk,0,0,0",
-"200808-8888,Gustafsson,GammalRisk,0,1,0",
-"20200807-8888,Nyqvist,UngRisk,0,1,0",
-"19200803-8888,Svensson,GammalInfekterad,0,0,1",
-"20200806-8888,Bergman,UngInfekterad,0,0,1",
-        };
+            "19880807-8888,Efternamnsson,VårdRisk,1,1,0",
+            "19880806-8888,Andersson,EjVårdRisk,0,1,0",
+            "19880805-8888,Karlsson,EjRiskEjVård,0,0,0",
+            "19200808-8888,Persson,GammalEjVårdEjRisk,0,0,0",
+            "20200808-8888,Johansson,UngEjVårdEjRisk,0,0,0",
+            "200808-8888,Gustafsson,GammalRisk,0,1,0",
+            "20200807-8888,Nyqvist,UngRisk,0,1,0",
+            "19200803-8888,Svensson,GammalInfekterad,0,0,1",
+            "20200806-8888,Bergman,UngInfekterad,0,0,1",
+            };
 
             // Act
             string[] output = Program.CreateVaccinationOrder(input, vaccinationSettings);
