@@ -110,13 +110,13 @@ namespace inlamning4
 
             while (true)
             {
+                int doses = 0;
                 Console.Write("Ange nytt antal doser: ");
 
                 try
                 {
-
-                    if (int.TryParse(Console.ReadLine(), out int doses))
-                    {
+                    doses = int.Parse(Console.ReadLine());
+                   
                         if (doses >= 0)
                         {
                             vaccinationSettings.AvailableDoses = doses;
@@ -126,12 +126,7 @@ namespace inlamning4
                         {
                             Console.WriteLine("Antal doser kan inte vara mindre än 0.");
                         }
-                    }
-                    else
-                    {
-                        Console.WriteLine("Använd enbart giltliga siffror för inmatning, 0-9");
-                    }
-
+                 
                 }
                 catch (Exception)
                 {
