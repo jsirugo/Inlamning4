@@ -187,7 +187,8 @@ namespace inlamning4
         }
         //för framtida referens till dokumentationen tog detta mig väldigt lång tid att få till
         //Jag fick leta länge för att hitta en lösning där programmet ignorerar allt efter en giltlig sökväg
-        //Då Directory.Exists i sig tillåter ofullständiga sökvägar. 
+        //Då Directory.Exists i sig tillåter ofullständiga sökvägar. Lösningen kom genom att bryta 
+        //ut IsPathValid till en separat funktion
         static void ChangeOutputFile()
         {
             while (true)
@@ -195,12 +196,33 @@ namespace inlamning4
                 Console.Write("Ange väg till utdatafil: ");
                 string input = Console.ReadLine();
                 string path = Path.GetDirectoryName(input);
+                string filename = Path.GetFileName(input);
 
                 if (IsPathValid(path))
-                {
-                    if (!input.EndsWith(".csv", StringComparison.OrdinalIgnoreCase))
+                { 
+                    //gör if else med funktionen kolla om inte .csv. Om ändelse inte
+                    // .csv, sätt .csv. Om tom, sätt standardvärde
+                    
+
+                    if (string.IsNullOrEmpty(filename))
+                    {
+                        fileSettings.OutputFilePath = "C:\\Windows\\Temp\\Vaccinations.csv";
+                        Console.WriteLine("Utdata felaktigt inmatad och ställd till standardvärde");
+                    }
+                    
+                
+                    else if (!input.EndsWith(".csv", StringComparison.OrdinalIgnoreCase))
+                    {
+
                         input += ".csv";
                     fileSettings.OutputFilePath = input;
+                    break;
+
+                    }
+                    else
+                    {
+                        fileSettings.OutputFilePath = input;
+                    }
                     break;
                 }
 
