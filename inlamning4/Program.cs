@@ -204,14 +204,13 @@ namespace inlamning4
                         fileSettings.OutputFilePath = "C:\\Windows\\Temp\\Vaccinations.csv";
                         Console.WriteLine("Utdata felaktigt inmatad och ställd till standardvärde");
                     }
-                    
-                
+                   
                     else if (!input.EndsWith(".csv", StringComparison.OrdinalIgnoreCase))
                     {
 
                         input += ".csv";
-                    fileSettings.OutputFilePath = input;
-                    break;
+                        fileSettings.OutputFilePath = input;
+                        break;
 
                     }
                     else
