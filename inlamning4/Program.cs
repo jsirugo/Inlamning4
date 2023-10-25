@@ -184,7 +184,7 @@ namespace inlamning4
         //för framtida referens till dokumentationen tog detta mig väldigt lång tid att få till
         //Jag fick leta länge för att hitta en lösning där programmet ignorerar allt efter en giltlig sökväg
         //Då Directory.Exists i sig tillåter ofullständiga sökvägar. Lösningen kom genom att bryta 
-        //ut IsPathValid till en separat funktion
+        //ut IsPathValid till en separat metod
         static void ChangeOutputFile()
         {
             while (true)
